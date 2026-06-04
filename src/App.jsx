@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Sidebar from './components/Sidebar';
+import Chatbot from './components/Chatbot';
 import Dashboard from './pages/Dashboard';
 import Reservations from './pages/Reservations';
 import Forecasting from './pages/Forecasting';
@@ -44,6 +45,7 @@ export default function App() {
           {page === 'predictor'    && <Predictor />}
         </main>
       </div>
+      <Chatbot />
     </div>
   );
 }
