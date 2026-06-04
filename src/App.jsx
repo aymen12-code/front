@@ -2,21 +2,14 @@ import { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Reservations from './pages/Reservations';
+import Forecasting from './pages/Forecasting';
 import Predictor from './pages/Predictor';
 
 const PAGE_CONFIG = {
-  dashboard: {
-    title: 'Analytics Dashboard',
-    sub: 'Overview of reservation performance and revenue trends',
-  },
-  reservations: {
-    title: 'Reservations',
-    sub: 'Browse, search, filter and manage all reservation records',
-  },
-  predictor: {
-    title: 'Cancellation Risk Predictor',
-    sub: 'Estimate cancellation probability for new bookings using historical patterns',
-  },
+  dashboard:    { title: 'Analytics Dashboard',           sub: 'Overview of reservation performance and revenue trends' },
+  reservations: { title: 'Reservations',                  sub: 'Browse, search, filter and manage all reservation records' },
+  forecasting:  { title: 'Forecasting & Cancellations',   sub: 'Monthly cancellation analysis, critical periods and segment performance' },
+  predictor:    { title: 'Cancellation Risk Predictor',   sub: 'Estimate cancellation probability for new bookings using historical patterns' },
 };
 
 function Topbar({ page }) {
@@ -47,6 +40,7 @@ export default function App() {
         <main className="page-body" id={`page-${page}`}>
           {page === 'dashboard'    && <Dashboard />}
           {page === 'reservations' && <Reservations />}
+          {page === 'forecasting'  && <Forecasting />}
           {page === 'predictor'    && <Predictor />}
         </main>
       </div>

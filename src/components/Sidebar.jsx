@@ -1,8 +1,9 @@
-import { LayoutDashboard, CalendarCheck2, BrainCircuit, Hotel } from 'lucide-react';
+import { LayoutDashboard, CalendarCheck2, BrainCircuit, TrendingDown } from 'lucide-react';
 
 const navItems = [
   { id: 'dashboard',     label: 'Dashboard',     icon: LayoutDashboard },
   { id: 'reservations',  label: 'Reservations',  icon: CalendarCheck2 },
+  { id: 'forecasting',   label: 'Forecasting',   icon: TrendingDown },
   { id: 'predictor',     label: 'Risk Predictor', icon: BrainCircuit },
 ];
 
