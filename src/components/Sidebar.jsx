@@ -11,7 +11,11 @@ export default function Sidebar({ active, onChange }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <h2>🏨 Hotel VALLERIA MEDINQ</h2>
+        <img
+          src="/logo.png"
+          alt="Valeria Madina Club Resort"
+          style={{ width: '100%', maxWidth: 180, borderRadius: 8, marginBottom: 8, display: 'block' }}
+        />
         <p>Analytics Suite</p>
       </div>
 
