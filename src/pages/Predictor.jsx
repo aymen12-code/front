@@ -13,32 +13,33 @@ const INITIAL = {
 function RiskGauge({ probability }) {
   const color = probability > 45 ? '#f43f5e' : probability > 25 ? '#f59e0b' : '#10b981';
 
-  // SVG semicircle gauge — no Recharts, full layout control
-  const cx = 110, cy = 105, r = 74, sw = 15;
-  const arcLen = Math.PI * r;                          // half-circumference
+  // cy is near the bottom so the arc curves upward (classic speedometer)
+  const cx = 110, cy = 115, r = 86, sw = 16;
+  const arcLen = Math.PI * r;
   const filled = Math.min(probability / 100, 1) * arcLen;
-  // d: from left endpoint counterclockwise (upward) to right endpoint
-  const d = `M ${cx - r} ${cy} A ${r} ${r} 0 0 0 ${cx + r} ${cy}`;
+
+  // sweep-flag = 1  →  clockwise in SVG  →  arc goes through the TOP
+  const d = `M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`;
 
   return (
     <svg
       viewBox="0 0 220 128"
-      style={{ width: '100%', display: 'block', overflow: 'visible' }}
+      style={{ width: '100%', display: 'block' }}
       aria-label={`Cancellation probability: ${probability}%`}
     >
       {/* Background track */}
       <path d={d} fill="none" stroke="rgba(99,157,255,0.1)"
         strokeWidth={sw} strokeLinecap="round" />
 
-      {/* Filled arc */}
+      {/* Filled arc — fills from left → top → right as probability rises */}
       <path d={d} fill="none" stroke={color}
         strokeWidth={sw} strokeLinecap="round"
         strokeDasharray={`${filled} ${arcLen * 2}`}
         style={{ transition: 'stroke-dasharray 0.7s ease, stroke 0.4s ease' }}
       />
 
-      {/* Percentage — baseline at cy-12, well below the arc top (cy-r ≈ 31) */}
-      <text x={cx} y={cy - 12}
+      {/* Percentage — inside the arch bowl, well below the arc top (y≈29) */}
+      <text x={cx} y={cy - 30}
         textAnchor="middle"
         fill={color} fontSize="38" fontWeight="800"
         fontFamily="Inter, system-ui, sans-serif"
@@ -47,8 +48,8 @@ function RiskGauge({ probability }) {
         {probability}%
       </text>
 
-      {/* Sub-label — below the arc endpoints (cy ± sw/2) */}
-      <text x={cx} y={cy + 18}
+      {/* Sub-label — between the number and the arc endpoints */}
+      <text x={cx} y={cy - 8}
         textAnchor="middle"
         fill="#4a5a7a" fontSize="11"
         fontFamily="Inter, system-ui, sans-serif"
