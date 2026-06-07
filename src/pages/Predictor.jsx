@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { RadialBarChart, RadialBar, ResponsiveContainer } from 'recharts';
 import { BrainCircuit, AlertTriangle, CheckCircle2, Info } from 'lucide-react';
 import { predictCancellation } from '../api';
 
@@ -13,26 +12,50 @@ const INITIAL = {
 
 function RiskGauge({ probability }) {
   const color = probability > 45 ? '#f43f5e' : probability > 25 ? '#f59e0b' : '#10b981';
+
+  // SVG semicircle gauge — no Recharts, full layout control
+  const cx = 110, cy = 105, r = 74, sw = 15;
+  const arcLen = Math.PI * r;                          // half-circumference
+  const filled = Math.min(probability / 100, 1) * arcLen;
+  // d: from left endpoint counterclockwise (upward) to right endpoint
+  const d = `M ${cx - r} ${cy} A ${r} ${r} 0 0 0 ${cx + r} ${cy}`;
+
   return (
-    <div style={{ position: 'relative', height: 160 }}>
-      <ResponsiveContainer width="100%" height={160}>
-        <RadialBarChart
-          cx="50%" cy="80%"
-          innerRadius="80%" outerRadius="100%"
-          startAngle={180} endAngle={0}
-          data={[{ value: probability, fill: color }]}
-        >
-          <RadialBar dataKey="value" cornerRadius={6} background={{ fill: 'rgba(99,157,255,0.07)' }} />
-        </RadialBarChart>
-      </ResponsiveContainer>
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0,
-        display: 'flex', flexDirection: 'column', alignItems: 'center'
-      }}>
-        <div className="risk-value" style={{ color }}>{probability}%</div>
-        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>Cancellation Probability</div>
-      </div>
-    </div>
+    <svg
+      viewBox="0 0 220 128"
+      style={{ width: '100%', display: 'block', overflow: 'visible' }}
+      aria-label={`Cancellation probability: ${probability}%`}
+    >
+      {/* Background track */}
+      <path d={d} fill="none" stroke="rgba(99,157,255,0.1)"
+        strokeWidth={sw} strokeLinecap="round" />
+
+      {/* Filled arc */}
+      <path d={d} fill="none" stroke={color}
+        strokeWidth={sw} strokeLinecap="round"
+        strokeDasharray={`${filled} ${arcLen * 2}`}
+        style={{ transition: 'stroke-dasharray 0.7s ease, stroke 0.4s ease' }}
+      />
+
+      {/* Percentage — baseline at cy-12, well below the arc top (cy-r ≈ 31) */}
+      <text x={cx} y={cy - 12}
+        textAnchor="middle"
+        fill={color} fontSize="38" fontWeight="800"
+        fontFamily="Inter, system-ui, sans-serif"
+        style={{ transition: 'fill 0.4s ease' }}
+      >
+        {probability}%
+      </text>
+
+      {/* Sub-label — below the arc endpoints (cy ± sw/2) */}
+      <text x={cx} y={cy + 18}
+        textAnchor="middle"
+        fill="#4a5a7a" fontSize="11"
+        fontFamily="Inter, system-ui, sans-serif"
+      >
+        Cancellation Probability
+      </text>
+    </svg>
   );
 }
 
